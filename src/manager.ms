@@ -13,7 +13,7 @@ rollout Manager "主下拉框" rolledUp:False silentErrors:False (
 
     struct simpleRoom(
         nameStr,
-        maxFilePathStr = MaxFilePath,
+        texturePath = MaxFilePath + "texture",
 
         -------------------------
         -- function
@@ -22,45 +22,57 @@ rollout Manager "主下拉框" rolledUp:False silentErrors:False (
         ),
 
         fn printFilePath = (
-            format "当前max文件的存储路径为：%\n" maxFilePathStr
+            format "当前max文件的存储路径为：%\n" MaxFilePath 
         ),
 
         fn exportModel = (
             
             selSetsCnt = getNumNamedSelSets()
 
-            for i = 1 to selSetsCnt by 1 do (
-                selSetNameStr = getNamedSelSetName i
-                selSetName = selSetNameStr as Name 
+            try (
+                for i = 1 to selSetsCnt by 1 do (
+                    selSetNameStr = getNamedSelSetName i
+                    selSetName = selSetNameStr as Name 
 
-                if selSetNameStr[1] == "W" then (
-                    selSetNameStr[1] = "w"
+                    -- w字母自动大写问题的纠正
+                    if selSetNameStr[1] == "W" then (
+                        selSetNameStr[1] = "w"
+                    )
+
+                    gltfFileName = nameStr + selSetNameStr + ".gltf"
+                    gltfPathName = MaxFilePath + gltfFileName
+                    format "当前gltf文件的完整名称为：%\n" gltfPathName
+                    param = maxScriptManager.InitParameters gltfPathName
+
+                    -- 导出参数设置
+                    select SelectionSets[selSetName]
+                    param.outputFormat = "gltf"
+                    param.exportOnlySelected = true
+                    param.exportMaterials = true
+                    param.exportTextures = true
+                    param.textureFolder = texturePath
+                    param.writeTextures = true 
+                    param.overwriteTextures = true 
+                    param.mergeAOwithMR = true 
+
+
+                    maxScriptManager.Export param 
+
+                    outputStr = nameStr + selSetNameStr + ".gltf文件导出成功\n\n"
+                    format outputStr
+
+                    sleep 5
                 )
-
-                gltfFileName = nameStr + selSetNameStr + ".gltf"
-                gltfPathName = MaxFilePath + gltfFileName
-                format "当前gltf文件的完整名称为：%\n" gltfPathName
-                param = maxScriptManager.InitParameters gltfPathName
-
-                -- 导出参数设置
-                select SelectionSets[selSetName]
-                param.outputFormat = "gltf"
-                param.exportOnlySelected = true
-                param.exportMaterials = true
-                param.exportTextures = true
-                texturePath = MaxFilePath + "\\texture"
-                param.textureFolder = texturePath
-                param.writeTextures = true 
-                param.overwriteTextures = true 
-                param.mergeAOwithMR = true 
-
-
-                maxScriptManager.Export param 
-
-                outputStr = selSetNameStr + ".gltf文件导出成功\n\n\n"
+            ) catch (
+                local tmpStr = nameStr + "简装样板导出失败\n\n请仔细排除出错的原因\n\n请手动删除不完整的gltf文件"
+                messageBox tmpStr title:"运行时错误提示" beep:True 
             )
 
-            format "该简装样板间的模型已全部导出完成\n"
+            format "%简装样板间的模型已全部导出完成\n\n\n\n\n" nameStr 
+
+            local tmpStr = nameStr + "简装样板间的模型已全部导出完成\n\n请继续导出下一个简装样板间"
+            queryBox tmpStr title:"提示对话框" beep:True 
+            
         )
     )
 
@@ -95,6 +107,12 @@ rollout Manager "主下拉框" rolledUp:False silentErrors:False (
     on roomName entered txt do (
         format "本简装样板间的名称为：%\n" txt 
         simpleRoomInst.nameStr = txt 
+
+        -- 创建一个texture子文件夹
+        res = makeDir simpleRoomInst.texturePath
+        if res == true then (
+            format "texture子文件夹创建成功\n"
+        ) 
     )
 
     -- 模型按类型分开暂存
