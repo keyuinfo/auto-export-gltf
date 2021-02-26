@@ -8,6 +8,16 @@ Assembly = dotNetClass "System.Reflection.Assembly"
 Assembly.loadfrom "F:\\3dsMax\\3ds Max 2017\\bin\\assemblies\\Max2Babylon.dll"
 global maxScriptManager = dotNetObject "Max2Babylon.MaxScriptManager"
 
+/*
+-- draco压缩的参数设置
+global dracoParam = dotNetObject "BabylonExport.Entities.DracoParameters"
+dracoParam.compressionLevel = 10
+dracoParam.quantizeColorBits = 8
+dracoParam.quantizeGenericBits = 12
+dracoParam.quantizeNormalBits = 10
+dracoParam.quantizePositionBits = 14
+dracoParam.quantizeTexcoordBits = 16
+*/
 
 rollout Manager "主下拉框" rolledUp:False silentErrors:False (
 
@@ -54,7 +64,9 @@ rollout Manager "主下拉框" rolledUp:False silentErrors:False (
                     param.writeTextures = true 
                     param.overwriteTextures = true 
                     param.mergeAOwithMR = true 
-
+                    -- param.dracoCompression = true
+                    -- param.dracoParams = dracoParam
+ 
 
                     maxScriptManager.Export param 
 
@@ -68,7 +80,7 @@ rollout Manager "主下拉框" rolledUp:False silentErrors:False (
                 messageBox tmpStr title:"运行时错误提示" beep:True 
             )
 
-            format "%简装样板间的模型已全部导出完成\n\n\n\n\n" nameStr 
+            format "%，简装样板间的模型已全部导出完成\n\n\n\n\n" nameStr 
 
             local tmpStr = nameStr + "简装样板间的模型已全部导出完成\n\n请继续导出下一个简装样板间"
             queryBox tmpStr title:"提示对话框" beep:True 
