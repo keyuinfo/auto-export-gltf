@@ -63,7 +63,7 @@ rollout Manager "主下拉框" rolledUp:False silentErrors:False (
                     param.textureFolder = texturePath
                     param.writeTextures = true 
                     param.overwriteTextures = true 
-                    param.mergeAOwithMR = true 
+                    param.mergeAOwithMR = false
                     -- param.dracoCompression = true
                     -- param.dracoParams = dracoParam
  
