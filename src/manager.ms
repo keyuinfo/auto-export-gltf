@@ -108,9 +108,10 @@ rollout Manager "主下拉框" rolledUp:False silentErrors:False (
             toolTip: "先选择curtain模型，再点击该按钮"
         button selectRest1Btn "暂存rest1" align:#center offset:[0, 0] \
             toolTip:"先选择包含门框的rest1模型，再点击该按钮"
+        /*
         button selectRest2Btn "暂存rest2" align:#center offset:[0, 0] \
             toolTip:"先选择包含吊顶的rest2模型，再点击该按钮"
-
+        */
         button exportBtn "导出模型" align:#center offset:[0, 0] 
 
     )
@@ -152,11 +153,13 @@ rollout Manager "主下拉框" rolledUp:False silentErrors:False (
 
     )
 
+    /*
     on selectRest2Btn pressed do (
 
         SelectionSets[#rest2] = getCurrentSelection()
 
     )
+    */
 
     on exportBtn pressed do (
         simpleRoomInst.exportModel()
