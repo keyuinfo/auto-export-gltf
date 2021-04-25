@@ -19,7 +19,7 @@ dracoParam.quantizePositionBits = 14
 dracoParam.quantizeTexcoordBits = 16
 */
 
-rollout Manager "主下拉框" rolledUp:False silentErrors:False (
+rollout Manager "简装样板间自动导出控件组" rolledUp:False silentErrors:False (
 
     struct simpleRoom(
         nameStr,
@@ -48,6 +48,10 @@ rollout Manager "主下拉框" rolledUp:False silentErrors:False (
                     if selSetNameStr[1] == "W" then (
                         selSetNameStr[1] = "w"
                     )
+                    if selSetNameStr[1] == "D" then (
+                        selSetNameStr[1] = "d"
+                    )
+                    
 
                     gltfFileName = nameStr + selSetNameStr + ".gltf"
                     gltfPathName = MaxFilePath + gltfFileName
@@ -89,29 +93,48 @@ rollout Manager "主下拉框" rolledUp:False silentErrors:False (
     )
 
     -----------------------------------------------------------------
-
+    -- 创建一个简装样板间实例
     local simpleRoomInst = simpleRoom()
 
 
-    group "简装样板间自动导出控件组" (
-
+    group "提示信息" (
         label tip_1 "1、输入完简装样板间的名称后一定要键入Enter" align:#left
         label tip_2 "2、暂存模型时，请先选择对应的模型，在点击对应的按钮" align:#left
+    )
 
+    group "参数设置控件" (
         edittext roomName "简装样板间名称：" text:"empty" align:#left
+        -- checkbox obtainCeiling "是否存在可被替换的吊顶：" align:#left checked: False 
+    )
 
+    group "可被替换的模型对应的控件" (
+        -- button selectCeilingBtn "暂存ceiling" align:#center offset:[0, 0] toolTip: "先选择ceiling模型，再点击该按钮"
+        label tip_3 "暂时不存在该类模型" align:#left
+    )
+
+    group "仅可被更换材质的模型对应的控件" (
         button selectFloorBtn "暂存floor" align:#center offset:[0, 0] \
             toolTip: "先选择floor模型，再点击该按钮"
         button selectWallBtn "暂存wall" align:#center offset:[0, 0] \
             toolTip: "先选择wall模型，再点击该按钮"
-        button selectCurtainBtn "暂存curtain" align:#center offset:[0, 0] \
-            toolTip: "先选择curtain模型，再点击该按钮"
-        button selectRest1Btn "暂存rest1" align:#center offset:[0, 0] \
-            toolTip:"先选择包含门框的rest1模型，再点击该按钮"        
+        button selectLivingRoomCurtainBtn "暂存客餐厅的curtain" align:#center offset:[0, 0] \
+            toolTip: "先选择客餐厅的curtain模型，再点击该按钮"
+        button selectBedRoomCurtainBtn "暂存卧室的curtain" align:#center offset:[0, 0] \
+            toolTip: "先选择卧室的curtain模型，再点击该按钮"
+        button selectDoorBtn "暂存door" align:#center offset:[0, 0] \
+            toolTip:"先选择所有的door模型，再点击该按钮"
+        button selectRest1Btn "暂存门框与踢脚线" align:#center offset:[0, 0] \
+            toolTip:"先选择包含门框和踢脚线的rest1模型，再点击该按钮"        
+    )
+
+    group "其余模型" (
         button selectRest2Btn "暂存rest2" align:#center offset:[0, 0] \
             toolTip:"先选择包含吊顶的rest2模型，再点击该按钮"
-        button exportBtn "导出模型" align:#center offset:[0, 0] 
+    )
 
+    group "最终导出控件" (
+        checkbox obtainDoor "是否存在可替换材质的门：" align:#center checked: True
+        button exportBtn "导出模型" align:#center offset:[0, 0] 
     )
 
 
@@ -119,7 +142,8 @@ rollout Manager "主下拉框" rolledUp:False silentErrors:False (
         format "本简装样板间的名称为：%\n" txt 
         simpleRoomInst.nameStr = txt 
 
-        -- 创建一个texture子文件夹
+        -- 创建一个texture子文件夹，为了成功的批量导出GLTF文件
+        -- 即使是重复创建也没关系
         res = makeDir simpleRoomInst.texturePath
         if res == true then (
             format "texture子文件夹创建成功\n"
@@ -139,9 +163,21 @@ rollout Manager "主下拉框" rolledUp:False silentErrors:False (
 
     )
 
-    on selectCurtainBtn pressed do (
+    on selectLivingRoomCurtainBtn pressed do (
 
-        SelectionSets[#curtain] = getCurrentSelection()
+        SelectionSets[#lrCurtain] = getCurrentSelection()
+
+    )
+
+    on selectBedRoomCurtainBtn pressed do (
+
+        SelectionSets[#brCurtain] = getCurrentSelection()
+
+    )
+
+    on selectDoorBtn pressed do (
+
+        SelectionSets[#door] = getCurrentSelection()
 
     )
 
@@ -158,6 +194,13 @@ rollout Manager "主下拉框" rolledUp:False silentErrors:False (
 
     )
     
+    on obtainDoor changed var do (
+        format "本简装样板间是否具有可替换材质的门：%\n" var
+        if var == False then (
+            deleteItem SelectionSets "Door"
+            format "名称为door的命名选择集已被删除\n"
+        )
+    )
 
     on exportBtn pressed do (
         simpleRoomInst.exportModel()
