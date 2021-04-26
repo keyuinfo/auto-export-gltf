@@ -117,10 +117,8 @@ rollout Manager "简装样板间自动导出控件组" rolledUp:False silentErro
             toolTip: "先选择floor模型，再点击该按钮"
         button selectWallBtn "暂存wall" align:#center offset:[0, 0] \
             toolTip: "先选择wall模型，再点击该按钮"
-        button selectLivingRoomCurtainBtn "暂存客餐厅的curtain" align:#center offset:[0, 0] \
-            toolTip: "先选择客餐厅的curtain模型，再点击该按钮"
-        button selectBedRoomCurtainBtn "暂存卧室的curtain" align:#center offset:[0, 0] \
-            toolTip: "先选择卧室的curtain模型，再点击该按钮"
+        button selectCurtainBtn "暂存curtain" align:#center offset:[0, 0] \
+            toolTip: "先选择curtain模型，再点击该按钮"
         button selectDoorBtn "暂存door" align:#center offset:[0, 0] \
             toolTip:"先选择所有的door模型，再点击该按钮"
         button selectDoorframeBtn "暂存doorframe" align:#center offset:[0, 0] \
@@ -165,15 +163,9 @@ rollout Manager "简装样板间自动导出控件组" rolledUp:False silentErro
 
     )
 
-    on selectLivingRoomCurtainBtn pressed do (
+    on selectCurtainBtn pressed do (
 
-        SelectionSets[#lrCurtain] = getCurrentSelection()
-
-    )
-
-    on selectBedRoomCurtainBtn pressed do (
-
-        SelectionSets[#brCurtain] = getCurrentSelection()
+        SelectionSets[#curtain] = getCurrentSelection()
 
     )
 
