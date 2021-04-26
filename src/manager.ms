@@ -123,13 +123,15 @@ rollout Manager "简装样板间自动导出控件组" rolledUp:False silentErro
             toolTip: "先选择卧室的curtain模型，再点击该按钮"
         button selectDoorBtn "暂存door" align:#center offset:[0, 0] \
             toolTip:"先选择所有的door模型，再点击该按钮"
-        button selectRest1Btn "暂存门框与踢脚线" align:#center offset:[0, 0] \
-            toolTip:"先选择包含门框和踢脚线的rest1模型，再点击该按钮"        
+        button selectDoorframeBtn "暂存doorframe" align:#center offset:[0, 0] \
+            toolTip:"先选择门框，再点击该按钮"
+        button selectSkirtlineBtn "暂存skirtline" align:#center offset:[0, 0] \
+            toolTip:"先选择踢脚线，再点击该按钮"
     )
 
     group "其余模型" (
-        button selectRest2Btn "暂存rest2" align:#center offset:[0, 0] \
-            toolTip:"先选择包含吊顶的rest2模型，再点击该按钮"
+        button selectRestBtn "暂存rest" align:#center offset:[0, 0] \
+            toolTip:"先选择本样板间剩余的所有模型，再点击该按钮"
     )
 
     group "最终导出控件" (
@@ -181,23 +183,29 @@ rollout Manager "简装样板间自动导出控件组" rolledUp:False silentErro
 
     )
 
-    on selectRest1Btn pressed do (
+    on selectDoorframeBtn pressed do (
 
-        SelectionSets[#rest1] = getCurrentSelection()
+        SelectionSets[#doorframe] = getCurrentSelection()
+
+    )
+
+    on selectSkirtlineBtn pressed do (
+        
+        SelectionSets[#skirtline] = getCurrentSelection()
 
     )
 
     
-    on selectRest2Btn pressed do (
+    on selectRestBtn pressed do (
 
-        SelectionSets[#rest2] = getCurrentSelection()
+        SelectionSets[#rest] = getCurrentSelection()
 
     )
     
     on obtainDoor changed var do (
         format "本简装样板间是否具有可替换材质的门：%\n" var
         if var == False then (
-            deleteItem SelectionSets "Door"
+            deleteItem SelectionSets "door"
             format "名称为door的命名选择集已被删除\n"
         )
     )
